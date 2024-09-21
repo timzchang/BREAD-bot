@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import { WebhookClient } from "discord.js";
+import {WebhookClient} from "discord.js";
 import cron from "node-cron";
 // import { DiscordRequest } from "../utils";
 
@@ -13,10 +13,19 @@ if (!url) {
   process.exit(1);
 }
 // Initialize the WebhookClient with the webhook URL
-const webhookClient = new WebhookClient({ url });
+const webhookClient = new WebhookClient({url});
 
 // Schedule a task to run every day at 9:00 AM
-cron.schedule("*/5 * * * * *", () => {
+cron.schedule("0 9 * * *", () => {
+  // open verses.csv
+  // date, verse, link_to_bible_gateway
+  // pick current date's verse
+  // send to channel
+  /* 
+    const {verse, link} = verses[Date.today]
+
+    webhookClient.send(`Today's Bread Reading is ${verse}: ${link}`)
+  */
   webhookClient
     .send("Good morning! Here is your daily message.")
     .then(() => console.log("Message sent successfully"))
