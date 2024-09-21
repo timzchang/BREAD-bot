@@ -56,7 +56,7 @@ async function createCommand() {
   try {
     // Send HTTP request with bot token
     const res = await DiscordRequest(globalEndpoint, {
-      method: "POST",
+      method: "PUT",
       body: commandBody,
     });
     console.log(await res.json());
