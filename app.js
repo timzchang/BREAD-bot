@@ -5,7 +5,7 @@ import {
   InteractionResponseType,
   verifyKeyMiddleware,
 } from "discord-interactions";
-import {getRandomEmoji} from "./utils.js";
+import { getRandomEmoji } from "./utils.js";
 
 // Create an express app
 const app = express();
@@ -21,13 +21,13 @@ app.post(
   verifyKeyMiddleware(process.env.PUBLIC_KEY),
   async function (req, res) {
     // Interaction type and data
-    const {type, data} = req.body;
+    const { type, data } = req.body;
 
     /**
      * Handle verification requests
      */
     if (type === InteractionType.PING) {
-      return res.send({type: InteractionResponseType.PONG});
+      return res.send({ type: InteractionResponseType.PONG });
     }
 
     /**
@@ -35,7 +35,7 @@ app.post(
      * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
      */
     if (type === InteractionType.APPLICATION_COMMAND) {
-      const {name} = data;
+      const { name } = data;
 
       // "test" command
       if (name === "test") {
@@ -50,11 +50,11 @@ app.post(
       }
 
       console.error(`unknown command: ${name}`);
-      return res.status(400).json({error: "unknown command"});
+      return res.status(400).json({ error: "unknown command" });
     }
 
     console.error("unknown interaction type", type);
-    return res.status(400).json({error: "unknown interaction type"});
+    return res.status(400).json({ error: "unknown interaction type" });
   }
 );
 
