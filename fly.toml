@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for bread-bot on 2024-09-21T11:41:32-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'bread-bot'
+primary_region = 'sjc'
+
+[build]
+
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[env]
+  PUBLIC_KEY = "6a147fd39221d2001c9964fb552ea1beadb8dd294745207dda0d6d1cd04b8b6b"
