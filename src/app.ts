@@ -5,15 +5,21 @@ import cron from "node-cron";
 import fs from "fs";
 import path from "path";
 import csv from "csv-parser";
+import dedent from "dedent";
 import {fileURLToPath} from "url";
 
 // Convert import.meta.url to a file path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function getTodaysVerse(
-  callback: (verse: string, link: string) => void
-) {
+type BreadRow = {
+  date: string;
+  link: string;
+  season: string;
+  theme: string;
+  verse: string;
+};
+export function getTodaysVerse(callback: (row: BreadRow) => void) {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   const csvFilePath = path.resolve(__dirname, "../lib/verses.csv");
 
@@ -22,12 +28,31 @@ export function getTodaysVerse(
     .on("data", (row) => {
       if (row.date === today) {
         console.log(row);
-        callback(row.verse, row.link);
+        callback(row);
       }
     })
     .on("end", () => {
       console.log("CSV file successfully processed");
     });
+}
+
+function getMessage(row: BreadRow) {
+  const {link, season, theme, verse} = row;
+  return dedent`
+    Good Morning! 🌅 🕊️
+    Let's take some time to be with the Lord in this season of ${season}. 🙏
+    How to read BREAD:
+    B - Be Still
+    R - Read
+    E - Encounter
+    A - Apply
+    D - Devote
+    For more information, visit https://realitysf.com/wp-content/uploads/2024/01/BREAD-2024-Digital-Guide.pdf
+
+    This week's theme is: ${theme}.
+    Today's reading is from ${verse}: ${link}
+    Have a blessed day! 🙌
+  `;
 }
 
 const app = express();
@@ -45,9 +70,11 @@ const webhookClient = new WebhookClient({url});
 // cron.schedule("0 9 * * *", () => {
 // for testing
 cron.schedule("*/5 * * * * *", () => {
-  getTodaysVerse((verse, link) => {
+  getTodaysVerse((row) => {
+    const message = getMessage(row);
+    console.log(message);
     webhookClient
-      .send(`Today's Bread Reading is ${verse}: ${link}`)
+      .send(message)
       .then(() => console.log("Message sent successfully"))
       .catch(console.log);
   });
