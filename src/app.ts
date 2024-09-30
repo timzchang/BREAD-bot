@@ -15,7 +15,7 @@ export function getTodaysVerse(
   callback: (verse: string, link: string) => void
 ) {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-  const csvFilePath = path.resolve(__dirname, "../assets/verses.csv");
+  const csvFilePath = path.resolve(__dirname, "../lib/verses.csv");
 
   fs.createReadStream(csvFilePath)
     .pipe(csv())

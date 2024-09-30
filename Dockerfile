@@ -60,7 +60,7 @@ FROM base
 COPY --from=build /app/build /app/build
 COPY --from=build /app/package.json /app/package.json
 COPY --from=build /app/node_modules /app/node_modules
-COPY --from=build /app/assets /app/assets
+COPY --from=build /app/lib /app/lib
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
