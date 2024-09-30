@@ -67,9 +67,9 @@ if (!url) {
 const webhookClient = new WebhookClient({url});
 
 // Schedule a task to run every day at 9:00 AM
-// cron.schedule("0 9 * * *", () => {
-// for testing
-cron.schedule("*/5 * * * * *", () => {
+cron.schedule("0 9 * * *", () => {
+  // for testing
+  // cron.schedule("*/5 * * * * *", () => {
   getTodaysVerse((row) => {
     const message = getMessage(row);
     console.log(message);
