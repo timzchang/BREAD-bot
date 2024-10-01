@@ -1,12 +1,12 @@
 import "dotenv/config";
 import express from "express";
 import {WebhookClient} from "discord.js";
-import cron from "node-cron";
 import fs from "fs";
 import path from "path";
 import csv from "csv-parser";
 import dedent from "dedent";
 import {fileURLToPath} from "url";
+import {CronJob} from "cron";
 
 // Convert import.meta.url to a file path
 const __filename = fileURLToPath(import.meta.url);
@@ -67,17 +67,21 @@ if (!url) {
 const webhookClient = new WebhookClient({url});
 
 // Schedule a task to run every day at 9:00 AM
-cron.schedule("0 9 * * *", () => {
-  // for testing
-  // cron.schedule("*/5 * * * * *", () => {
-  getTodaysVerse((row) => {
-    const message = getMessage(row);
-    console.log(message);
-    webhookClient
-      .send(message)
-      .then(() => console.log("Message sent successfully"))
-      .catch(console.log);
-  });
+CronJob.from({
+  cronTime: "0 9 * * *",
+  // cronTime: "*/5 * * * * *",  // for testing
+  onTick: function () {
+    getTodaysVerse((row) => {
+      const message = getMessage(row);
+      console.log(message);
+      webhookClient
+        .send(message)
+        .then(() => console.log("Message sent successfully"))
+        .catch(console.log);
+    });
+  },
+  start: true,
+  timeZone: "America/Los_Angeles",
 });
 
 app.get("/", (req, res) => {
