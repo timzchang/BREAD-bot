@@ -19,7 +19,7 @@ type BreadRow = {
   theme: string;
   verse: string;
 };
-export function getTodaysVerse(callback: (row: BreadRow) => void) {
+export function getTodaysVerse(callback: (row?: BreadRow) => void) {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   const csvFilePath = path.resolve(__dirname, "../lib/verses.csv");
 
@@ -29,6 +29,8 @@ export function getTodaysVerse(callback: (row: BreadRow) => void) {
       if (row.date === today) {
         console.log(row);
         callback(row);
+      } else {
+        callback();
       }
     })
     .on("end", () => {
@@ -36,7 +38,13 @@ export function getTodaysVerse(callback: (row: BreadRow) => void) {
     });
 }
 
-function getMessage(row: BreadRow) {
+function getMessage(row?: BreadRow) {
+  if (!row) {
+    return dedent`
+      Good Morning! 🌅 🕊️
+      Today's reading is not available. 🙏
+      Have a blessed Day! 🙌`;
+  }
   const {link, season, theme, verse} = row;
   return dedent`
     Good Morning! 🌅 🕊️
@@ -84,7 +92,7 @@ CronJob.from({
   timeZone: "America/Los_Angeles",
 });
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Express server with cron job is running!");
 });
 
