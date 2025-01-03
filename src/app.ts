@@ -22,6 +22,7 @@ type BreadRow = {
 export function getTodaysVerse(callback: (row?: BreadRow) => void) {
   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
   const csvFilePath = path.resolve(__dirname, "../lib/verses.csv");
+  let verseFound = false;
 
   fs.createReadStream(csvFilePath)
     .pipe(csv())
@@ -29,11 +30,14 @@ export function getTodaysVerse(callback: (row?: BreadRow) => void) {
       if (row.date === today) {
         console.log(row);
         callback(row);
-      } else {
-        callback();
+        verseFound = true;
       }
     })
     .on("end", () => {
+      if (!verseFound) {
+        console.log(`Verse not found for ${today}`);
+        callback();
+      }
       console.log("CSV file successfully processed");
     });
 }
@@ -76,7 +80,7 @@ const webhookClient = new WebhookClient({url});
 
 // Schedule a task to run every day at 9:00 AM
 CronJob.from({
-  cronTime: "0 9 * * *",
+  cronTime: "0 8 * * *",
   // cronTime: "*/5 * * * * *",  // for testing
   onTick: function () {
     getTodaysVerse((row) => {
